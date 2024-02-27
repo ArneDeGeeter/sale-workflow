@@ -155,10 +155,10 @@ class TestSaleOrderLotSelection(test_common.SingleTransactionCase):
                 "location_dest_id": self.stock_location.id,
             }
         )
-        for move in picking_in.move_ids:
+        for move in picking_in.move_lines:
             self.assertEqual(move.state, "draft", "Wrong state of move line.")
         picking_in.action_confirm()
-        for move in picking_in.move_ids:
+        for move in picking_in.move_lines:
             self.assertEqual(move.state, "assigned", "Wrong state of move line.")
         lot10 = False
         lot11 = False
