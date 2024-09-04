@@ -69,6 +69,10 @@ class SaleOrderLine(models.Model):
         if assigned_bo_line:
             return assigned_bo_line
         non_date_bo_lines = bo_lines.filtered(lambda l: not l.date_schedule)
+        if self.env.context.get("ignore_bo", False):
+            bad_lines = self.env.context.get("ignore_bo", [])
+            non_date_bo_lines = non_date_bo_lines.filtered(lambda r: r.id not in bad_lines)
+
         if non_date_bo_lines:
             return non_date_bo_lines[0]
 
