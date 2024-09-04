@@ -156,36 +156,6 @@ class BlanketOrder(models.Model):
     )
 
     # Fields use to filter in tree view
-    original_uom_qty = fields.Float(
-        string="Original quantity",
-        compute="_compute_uom_qty",
-        search="_search_original_uom_qty",
-        default=0.0,
-    )
-    ordered_uom_qty = fields.Float(
-        string="Ordered quantity",
-        compute="_compute_uom_qty",
-        search="_search_ordered_uom_qty",
-        default=0.0,
-    )
-    invoiced_uom_qty = fields.Float(
-        string="Invoiced quantity",
-        compute="_compute_uom_qty",
-        search="_search_invoiced_uom_qty",
-        default=0.0,
-    )
-    remaining_uom_qty = fields.Float(
-        string="Remaining quantity",
-        compute="_compute_uom_qty",
-        search="_search_remaining_uom_qty",
-        default=0.0,
-    )
-    delivered_uom_qty = fields.Float(
-        string="Delivered quantity",
-        compute="_compute_uom_qty",
-        search="_search_delivered_uom_qty",
-        default=0.0,
-    )
 
     def _get_sale_orders(self):
         return self.mapped("line_ids.sale_lines.order_id")
@@ -224,14 +194,6 @@ class BlanketOrder(models.Model):
                 order.state = "done"
             else:
                 order.state = "open"
-
-    def _compute_uom_qty(self):
-        for bo in self:
-            bo.original_uom_qty = sum(bo.mapped("order_id.original_uom_qty"))
-            bo.ordered_uom_qty = sum(bo.mapped("order_id.ordered_uom_qty"))
-            bo.invoiced_uom_qty = sum(bo.mapped("order_id.invoiced_uom_qty"))
-            bo.delivered_uom_qty = sum(bo.mapped("order_id.delivered_uom_qty"))
-            bo.remaining_uom_qty = sum(bo.mapped("order_id.remaining_uom_qty"))
 
     @api.onchange("partner_id")
     def onchange_partner_id(self):
@@ -356,51 +318,6 @@ class BlanketOrder(models.Model):
         )
         expired_orders.modified(["validity_date"])
         expired_orders.recompute()
-
-    @api.model
-    def _search_original_uom_qty(self, operator, value):
-        bo_line_obj = self.env["sale.blanket.order.line"]
-        res = []
-        bo_lines = bo_line_obj.search([("original_uom_qty", operator, value)])
-        order_ids = bo_lines.mapped("order_id")
-        res.append(("id", "in", order_ids.ids))
-        return res
-
-    @api.model
-    def _search_ordered_uom_qty(self, operator, value):
-        bo_line_obj = self.env["sale.blanket.order.line"]
-        res = []
-        bo_lines = bo_line_obj.search([("ordered_uom_qty", operator, value)])
-        order_ids = bo_lines.mapped("order_id")
-        res.append(("id", "in", order_ids.ids))
-        return res
-
-    @api.model
-    def _search_invoiced_uom_qty(self, operator, value):
-        bo_line_obj = self.env["sale.blanket.order.line"]
-        res = []
-        bo_lines = bo_line_obj.search([("invoiced_uom_qty", operator, value)])
-        order_ids = bo_lines.mapped("order_id")
-        res.append(("id", "in", order_ids.ids))
-        return res
-
-    @api.model
-    def _search_delivered_uom_qty(self, operator, value):
-        bo_line_obj = self.env["sale.blanket.order.line"]
-        res = []
-        bo_lines = bo_line_obj.search([("delivered_uom_qty", operator, value)])
-        order_ids = bo_lines.mapped("order_id")
-        res.append(("id", "in", order_ids.ids))
-        return res
-
-    @api.model
-    def _search_remaining_uom_qty(self, operator, value):
-        bo_line_obj = self.env["sale.blanket.order.line"]
-        res = []
-        bo_lines = bo_line_obj.search([("remaining_uom_qty", operator, value)])
-        order_ids = bo_lines.mapped("order_id")
-        res.append(("id", "in", order_ids.ids))
-        return res
 
 
 class BlanketOrderLine(models.Model):

@@ -278,31 +278,6 @@
                     string="Open"
                     domain="[('state','=', 'open')]"
                 />
-                <filter
-                    name="original_uom_qty"
-                    string="Original Qty"
-                    domain="[('original_uom_qty','>',0.0)]"
-                />
-                <filter
-                    name="ordered_uom_qty"
-                    string="Ordered Qty"
-                    domain="[('ordered_uom_qty','>',0.0)]"
-                />
-                <filter
-                    name="invoiced_uom_qty"
-                    string="Invoiced Qty"
-                    domain="[('invoiced_uom_qty','>',0.0)]"
-                />
-                <filter
-                    name="received_uom_qty"
-                    string="Delivered Qty"
-                    domain="[('delivered_uom_qty','>',0.0)]"
-                />
-                <filter
-                    name="remaining_uom_qty"
-                    string="Remaining Qty"
-                    domain="[('remaining_uom_qty','>',0.0)]"
-                />
                 <group>
                     <field name="name" />
                     <field name="partner_id" />
